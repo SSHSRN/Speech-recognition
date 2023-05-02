@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Speech to Text in HTML, da</title>
+</head>
+
+<body>
+    <div>
+        <button id="toggle-btn">Start Listening</button>
+    </div>
+    <div>
+        <textarea id="textarea" rows="10" cols="50"></textarea>
+    </div>
+    <script>
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        // lang=> english
+        recognition.lang = 'en-US';
+        recognition.interimResults = true;
+
+        let textarea = document.getElementById('textarea');
+        let toggleBtn = document.getElementById('toggle-btn');
+        let listening = false;
+
+        toggleBtn.addEventListener('click', () => {
+            // logic to start and stop the speech recognition
+            if (listening) {
+                recognition.stop();
+                toggleBtn.innerText = 'Start Listening';
+            } else {
+                recognition.start();
+                toggleBtn.innerText = 'Stop Listening';
+            }
+            listening = !listening;
+        });
+
+        recognition.addEventListener('result', (event) => {
+            // when the speech recognition returns a result, update the textarea
+            // Later update this to send the result in the request body to the backend
+            const transcript = Array.from(event.results)
+                .map(result => result[0])
+                .map(result => result.transcript)
+                .join('');
+            textarea.value = transcript;
+            if (event.results[0].isFinal) {
+                textarea.value += '\n';
+            }
+        });
+
+        recognition.addEventListener('end', () => {
+            if (listening) {
+                recognition.start();
+            }
+        });
+    </script>
+</body>
+
+</html>
