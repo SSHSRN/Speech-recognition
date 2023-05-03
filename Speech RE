@@ -36,3 +36,4 @@ def search():
     return jsonify({'message': 'No match found for the search term.'})
 
 if __name__ == '__main__':
+  app.run()
