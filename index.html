@@ -6,12 +6,10 @@
 </head>
 
 <body>
-    <div>
-        <button id="toggle-btn">Start Listening</button>
-    </div>
-    <div>
-        <textarea id="textarea" rows="10" cols="50"></textarea>
-    </div>
+    <button id="toggle-btn">Start Listening</button><br>
+    <input type="text" id="inputField"><br>
+    <button onclick="sendText('faculty')">Search Faculty</button>
+    <button onclick="sendText('roomno')">Search Room</button>
     <script>
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -19,7 +17,7 @@
         recognition.lang = 'en-US';
         recognition.interimResults = true;
 
-        let textarea = document.getElementById('textarea');
+        let inputField = document.getElementById('inputField');
         let toggleBtn = document.getElementById('toggle-btn');
         let listening = false;
 
@@ -36,15 +34,15 @@
         });
 
         recognition.addEventListener('result', (event) => {
-            // when the speech recognition returns a result, update the textarea
+            // when the speech recognition returns a result, update the inputField
             // Later update this to send the result in the request body to the backend
             const transcript = Array.from(event.results)
                 .map(result => result[0])
                 .map(result => result.transcript)
                 .join('');
-            textarea.value = transcript;
+            inputField.value = transcript;
             if (event.results[0].isFinal) {
-                textarea.value += '\n';
+                inputField.value += '\n';
             }
         });
 
@@ -53,6 +51,31 @@
                 recognition.start();
             }
         });
+
+        function sendText(x) {
+            console.log(x);
+            // send the text to the backend, in our caes, it is flask.
+            let text = inputField.value;
+            console.log(text);
+            // send a post request to the backend
+            fetch('http://localhost:5000/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: x,
+                    data: text
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 </body>
 
