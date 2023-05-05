@@ -1,37 +1,42 @@
 import csv
-import speech_recognition as sr
-import pyttsx3 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+cors = CORS(app)
 
 @app.route('/search', methods=['POST'])
 def search():
-    r = sr.Recognizer()
-    engine = pyttsx3.init()
+    # r = sr.Recognizer()
+    # engine = pyttsx3.init()
 
     search_type = None
     search_term = None
     
     data = request.get_json()
-    speech_to_text = data['speech_to_text']
-    if 'faculty' in speech_to_text.lower():
+    print(data)
+    sType = data['type']
+    if 'faculty' in sType.lower():
         search_type = 'Faculty Name'
-    elif 'roomno' in speech_to_text.lower():
+    elif 'roomno' in sType.lower():
         search_type = 'ROOM NO'
     else:
         return jsonify({'message': 'Invalid search type. Please try again.'})
     
-    search_term = data['search_term']
+    search_term = data['data']
     
     if search_type and search_term:
         with open('NWC Name board1.csv', mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
+            resList = []
             for row in csv_reader:
                 if row[search_type] == search_term:
-                    # Return the search result as a JSON response
-                    result = {'name': row['Name'], 'room_no': row['ROOM NO']}
-                    return jsonify(result)
+                    print(row)
+                    resList.append(row)
+            if len(resList) > 0:
+                print(resList)
+                return jsonify(resList)
+
 
     return jsonify({'message': 'No match found for the search term.'})
 
