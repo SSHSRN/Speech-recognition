@@ -24,19 +24,21 @@ def search():
         return jsonify({'message': 'Invalid search type. Please try again.'})
     
     search_term = data['data']
-    
+    search_term = search_term.lower().replace(" ","")
     if search_type and search_term:
         with open('NWC Name board1.csv', mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
+            for row in csv_reader:
+                row[search_type] = row[search_type].lower().replace(" ","")
+            csv_file.seek(0)
             resList = []
             for row in csv_reader:
-                if row[search_type] == search_term:
+                if search_term in row[search_type] and len(search_term) >= len(row[search_type])/2:
                     print(row)
                     resList.append(row)
             if len(resList) > 0:
                 print(resList)
                 return jsonify(resList)
-
 
     return jsonify({'message': 'No match found for the search term.'})
 
