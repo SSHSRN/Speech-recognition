@@ -17,7 +17,7 @@ def search():
     print(data)
     sType = data['type']
     if 'faculty' in sType.lower():
-        search_type = 'Faculty Name'
+        search_type = 'Faculty name'
     elif 'roomno' in sType.lower():
         search_type = 'ROOM NO'
     else:
