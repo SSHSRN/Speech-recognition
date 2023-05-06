@@ -1,0 +1,27 @@
+body    {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-image: url("./assets/srm.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.65;
+}
+
+.hFull{
+    height: 100vh;
+}
+
+.allCenter{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.detailsDiv{
+    padding: 50px;
+    border: 2px solid rgb(209, 205, 205);
+    border-radius: 30px;
+    background-color: lightgrey;
+}
