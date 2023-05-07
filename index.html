@@ -2,33 +2,69 @@
 <html>
 
 <head>
-    <title>Speech to Text in HTML, da</title>
+    <title>NWC Faculty and StaffRoom Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 
 <body>
-    <button id="toggle-btn">Start Listening</button><br>
-    <input type="text" id="inputField"><br>
-    <button onclick="sendText('faculty')">Search Faculty</button>
-    <button onclick="sendText('roomno')">Search Room</button>
+    <div class="container hFull allCenter">
+        <div class="allCenter detailsDiv">
+            <h1>NWC Faculty and StaffRoom Details</h1>
+            <h2>Search by Faculty Name or Room Number</h2>
+            <div class="searchButtons">
+                <button class="searchButton searchFaculty">Search Faculty</button>
+                <button class="searchButton searchRoom">Search Room</button>
+            </div>
+            <div class="searchBar allCenter">
+                <div id="toggle-btn" class="mt-3 toggle-btn">
+                    <img class="mic" src="assets/muted.svg"></img>
+                </div>
+                <input placeholder="Start Speaking!" type="text" class="inputField" id="inputField"><br>
+                <button class="searchButton search" onclick="sendText()">Search</button>
+            </div>
+        </div>
+    </div>
     <script>
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
-        // lang=> english
         recognition.lang = 'en-US';
         recognition.interimResults = true;
 
         let inputField = document.getElementById('inputField');
         let toggleBtn = document.getElementById('toggle-btn');
+        let searchFaculty = document.querySelector('.searchFaculty');
+        let searchRoom = document.querySelector('.searchRoom');
+        let micImg = document.querySelector('.mic');
         let listening = false;
+        let searchType = '';
+
+        searchFaculty.addEventListener('click', () => {
+            if(document.querySelector('.searchBar').style.display == 'none' || document.querySelector('.searchBar').style.display == '') {
+                document.querySelector('.searchBar').style.display = 'flex';
+                searchType = 'faculty';
+            } else {
+                document.querySelector('.searchBar').style.display = 'none';
+            }
+        });
+
+        searchRoom.addEventListener('click', () => {
+            if(document.querySelector('.searchBar').style.display == 'none' || document.querySelector('.searchBar').style.display == '') {
+                document.querySelector('.searchBar').style.display = 'flex';
+                searchType = 'room';
+            } else {
+                document.querySelector('.searchBar').style.display = 'none';
+            }
+        });
 
         toggleBtn.addEventListener('click', () => {
             // logic to start and stop the speech recognition
             if (listening) {
                 recognition.stop();
-                toggleBtn.innerText = 'Start Listening';
+                micImg.src = 'assets/muted.svg';
             } else {
                 recognition.start();
-                toggleBtn.innerText = 'Stop Listening';
+                micImg.src = 'assets/unmuted.svg';
             }
             listening = !listening;
         });
@@ -52,11 +88,15 @@
             }
         });
 
-        function sendText(x) {
-            console.log(x);
+        function sendText() {
+            console.log(searchType);
             // send the text to the backend, in our caes, it is flask.
             let text = inputField.value;
             console.log(text);
+            if(text == '') {
+                alert('Please speak something or type something in the search bar');
+                return;
+            }
             // send a post request to the backend
             fetch('http://localhost:5000/search', {
                 method: 'POST',
@@ -64,7 +104,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    type: x,
+                    type: searchType,
                     data: text
                 })
             })
@@ -77,6 +117,7 @@
                 });
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
 
 </html>
