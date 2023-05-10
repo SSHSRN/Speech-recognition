@@ -20,7 +20,7 @@
                 <div id="toggle-btn" class="mt-3 toggle-btn">
                     <img class="mic" src="assets/muted.svg"></img>
                 </div>
-                <input placeholder="Start Speaking!" type="text" class="inputField" id="inputField"><br>
+                <input placeholder="Start Speaking!" type="text" class="inputField" id="inputField" readonly><br>
                 <button class="searchButton search" onclick="sendText()">Search</button>
             </div>
         </div>
@@ -90,9 +90,9 @@
 
         function sendText() {
             console.log(searchType);
-            // send the text to the backend, in our caes, it is flask.
-            let text = inputField.value;
-            console.log(text);
+            // send the text to the backend, in our case, it is flask.
+            let text = inputField.value.split(".").join("").split(" ").join("").toLowerCase();
+            console.log("Data to search is: " + text + " and type is: " + searchType);
             if(text == '') {
                 alert('Please speak something or type something in the search bar');
                 return;
