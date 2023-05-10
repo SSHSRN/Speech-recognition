@@ -34,3 +34,7 @@ The above command will start a local server at port 8000. To view the changes, o
 ```bash
 http://localhost:8000/
 ```
+
+## Contributors
+### [Christo Raymonde](https://github.com/ec7719)
+### [Srihari S](https://github.com/SSHSRN)
