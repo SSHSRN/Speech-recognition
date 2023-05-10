@@ -17,14 +17,14 @@ def search():
     print(data)
     sType = data['type']
     if 'faculty' in sType.lower():
-        search_type = 'Faculty name'
+        search_type = 'Faculty Name'
     elif 'roomno' in sType.lower():
         search_type = 'ROOM NO'
     else:
         return jsonify({'message': 'Invalid search type. Please try again.'})
     
     search_term = data['data']
-    search_term = search_term.lower().replace(" ","")
+    print("Search term is: ", search_term)
     if search_type and search_term:
         with open('NWC Name board1.csv', mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file)
@@ -33,7 +33,7 @@ def search():
             csv_file.seek(0)
             resList = []
             for row in csv_reader:
-                if search_term in row[search_type] and len(search_term) >= len(row[search_type])/2:
+                if search_term in "".join("".join(row[search_type].split(".")).split(" ")).lower():
                     print(row)
                     resList.append(row)
             if len(resList) > 0:
